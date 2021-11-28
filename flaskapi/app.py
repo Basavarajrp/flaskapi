@@ -1,5 +1,5 @@
 from flask import Flask, request
-from flask_restx import Resource, Api, reqparse
+from flask_restx import Resource, Api, fields, reqparse
 import werkzeug
 import cloudinary
 from cloudinary.uploader import upload
@@ -21,7 +21,11 @@ api = Api(app)
 # Request Parser
 parser.add_argument('name', type=str, location='form')
 parser.add_argument('last_name', type=str, location='form')
-parser.add_argument('picture', type=werkzeug.datastructures.FileStorage, location='files')
+parser.add_argument('picture1', type=werkzeug.datastructures.FileStorage, location='files')
+parser.add_argument('picture2', type=werkzeug.datastructures.FileStorage, location='files')
+parser.add_argument('picture3', type=werkzeug.datastructures.FileStorage, location='files')
+
+
 
 
 
@@ -35,17 +39,30 @@ class HelloWorld(Resource):
 class Upload(Resource):
     @api.expect(parser, code=201)
     def post(self):
-        file_to_upload = request.files['picture']
-        data = request.form.to_dict()
+        try:
+            file_to_upload1 = request.files['picture1']
+            file_to_upload2 = request.files['picture2']
+            file_to_upload3 = request.files['picture3']
 
-        if file_to_upload:
-            upload_result = upload(file_to_upload)
-            url = upload_result.get("url")
-            return {'Successfull': 200,
-                    'data':data, 
-                    'image':url
-                   }
-    
+            data = request.form.to_dict()
+
+            if file_to_upload1:
+                upload_result1 = upload(file_to_upload1)
+                upload_result2 = upload(file_to_upload2)
+                upload_result3 = upload(file_to_upload3)
+
+                url1 = upload_result1.get("url")
+                url2 = upload_result2.get("url")
+                url3 = upload_result3.get("url")
+
+                return {'Successfull': 200,
+                        'data':data, 
+                        'image1':url1,
+                        'image2':url2,
+                        'image3':url3,
+                    }
+        except Exception as e:
+            print(e)
 
 if __name__ == '__main__':
     app.run(debug=True)
