@@ -60,6 +60,9 @@ class Upload(Resource):
                         'image1':url1,
                         'image2':url2,
                         'image3':url3,
+                        'file_to_upload1':file_to_upload1,
+                        'file_to_upload2':file_to_upload2,
+                        
                     }
         except Exception as e:
             print(e)
